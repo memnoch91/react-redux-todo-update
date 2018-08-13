@@ -7,10 +7,30 @@ import { Input, Label, Button } from "reactstrap";
 
 class EditTodo extends Component {
   state = {
-    loadedTodo: null
+    loadedTodo: null,
+    newTodo: null
   };
 
-  handleDeleteTodo = () => {};
+  addTodo = event => {
+    event.preventDefault();
+  };
+
+  deleteTodo = event => {
+    event.preventDefault();
+    let incTodo = this.props.currentState._id;
+    axios
+      .delete(`/api/todos/delete/${incTodo}`)
+      .then(res => {
+        console.log("respone", res);
+      })
+      .catch(err => console.log(err));
+  };
+
+  handleDeleteEvent = evt => {
+    this.deleteTodo(evt);
+    const selectedTodo = this.props.currentState;
+    this.props.handleDeleteTodo(selectedTodo);
+  };
 
   render() {
     let currentTodo = this.props.currentState;
@@ -24,7 +44,9 @@ class EditTodo extends Component {
           </Label>
           <div>
             <Button color="primary">Save</Button>
-            <Button color="warning">Delete</Button>
+            <Button color="warning" onClick={this.handleDeleteEvent.bind(this)}>
+              Delete
+            </Button>
           </div>
         </div>
       );
