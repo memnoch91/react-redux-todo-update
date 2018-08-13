@@ -1,0 +1,7 @@
+.TodoItem {
+  cursor: pointer;
+  margin-top: 3px;
+}
+.list-group-item .new :hover {
+  background-color: #9dda24;
+}
