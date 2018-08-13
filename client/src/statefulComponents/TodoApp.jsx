@@ -19,6 +19,7 @@ class TodoApp extends Component {
   };
 
   componentDidMount() {
+    /*
     axios.get("/api/todos/get").then(res => {
       this.setState({
         todos: res.data,
@@ -26,12 +27,10 @@ class TodoApp extends Component {
       });
       console.log("compDidMount", this.props.tds);
     });
-
-    /*
-    const test = this.props.getTodosFromDb();
-
-    console.log("test", test);
     */
+
+    const test = this.props.getTodosFromDb();
+    console.log("test", test);
   }
 
   getTodoTextFromInput = event => {

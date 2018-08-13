@@ -8,11 +8,21 @@ import { Input, Label, Button } from "reactstrap";
 class EditTodo extends Component {
   state = {
     loadedTodo: null,
-    newTodo: null
+    newTodo: null,
+    updateTodo: ""
   };
 
-  addTodo = event => {
-    event.preventDefault();
+  handleEditTodo = e => {
+    let updateTodo = this.state.updateTodo;
+    if (!updateTodo) {
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    } else {
+      this.setState({
+        updateTodo: this.props.currentState.todoText
+      });
+    }
   };
 
   deleteTodo = event => {
@@ -38,9 +48,16 @@ class EditTodo extends Component {
     if (currentTodo) {
       post = (
         <div className="editTodo">
-          <h3>{currentTodo.todoText}</h3>
+          <h3>{this.state.updateTodo}</h3>
           <Label for="editTodo">
-            <Input type="text" id="editTodo" placeholder="Edit todo here" />
+            <Input
+              type="text"
+              id="editTodo"
+              placeholder="Edit todo here"
+              name="updateTodo"
+              onChange={this.handleEditTodo}
+              value={this.state.updateTodo}
+            />
           </Label>
           <div>
             <Button color="primary">Save</Button>

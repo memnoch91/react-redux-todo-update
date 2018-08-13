@@ -10,11 +10,12 @@ export const setTodosLoading = () => {
 export const getTodos = dispatch => {
   return () => {
     setTodosLoading(dispatch);
-    axios.get("/api/todos/get").then(res =>
+    axios.get("/api/todos/get").then(res => {
+      console.log("vasile", res);
       dispatch({
         type: GET_TODOS,
         payload: res.data
-      })
-    );
+      });
+    });
   };
 };
