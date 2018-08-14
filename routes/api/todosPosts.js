@@ -43,7 +43,7 @@ router.post("/add", (req, res) => {
   });
 
   newTodo.save(req.body, (err, data) => {
-    err ? req.status(500).json(err.message) : res.status(200).json(data);
+    err ? res.status(500).json(err.message) : res.status(200).json(data);
   });
 });
 
@@ -64,7 +64,7 @@ router.delete("/delete/:id", (req, res) => {
  * @description update a todo
  * @acces       Public
  */
-router.post("/update/:id", (req, res) => {
+router.put("/update/:id", (req, res) => {
   Todo.findByIdAndUpdate({ _id: req.params.id }, req.body).then(() => {
     Todo.findOne({ _id: req.params.id }, (err, data) => {
       err ? req.status(500).json(err.message) : res.status(200).json(data);

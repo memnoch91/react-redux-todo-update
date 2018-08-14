@@ -3,13 +3,12 @@ const Schema = mongoose.Schema;
 
 const todoSchema = new Schema({
   todoText: {
-    type: String,
-    required: true
+    type: String
+    //required: true
   },
   todoComplete: {
     type: Boolean,
-    default: false,
-    required: true
+    default: false
   },
   todoDate: {
     type: Date,

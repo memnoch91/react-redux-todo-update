@@ -6,19 +6,20 @@ import EditTodo from "./EditTodo";
 import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { Container, Form, Input, Label, ListGroup, Button } from "reactstrap";
 
-import axios from "axios";
+//import axios from "axios";
 import { connect } from "react-redux";
-import { getTodos } from "../actions/index";
+import { getTodos, addTodo } from "../actions/index";
 
 class TodoApp extends Component {
   state = {
     todos: [],
     clickedTodo: null,
     deletedTodos: null,
-    toBeAdded: null
+    addTodoText: null
   };
 
   componentDidMount() {
+    this.props.getTodosFromDb();
     /*
     axios.get("/api/todos/get").then(res => {
       this.setState({
@@ -28,15 +29,16 @@ class TodoApp extends Component {
       console.log("compDidMount", this.props.tds);
     });
     */
-
-    const test = this.props.getTodosFromDb();
-    console.log("test", test);
   }
 
-  getTodoTextFromInput = event => {
-    let textFromInput = event.target.value;
-    this.setState({ toBeAdded: textFromInput });
-    //console.log(event.target.value);
+  getTodoTextFromInput = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handAddTodo = e => {
+    e.preventDefault();
+    let currentText = this.state.addTodoText;
+    this.props.onAddTodo(currentText);
   };
 
   handleTodoClicked = todo => {
@@ -51,18 +53,14 @@ class TodoApp extends Component {
     });
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState !== this.state) {
-      axios.get("/api/todos/get").then(res => {
-        this.setState({
-          todos: res.data
-        });
-      });
+  componentDidUpdate(prevProps, presState) {
+    if (presState !== prevProps) {
+      this.props.getTodosFromDb();
     }
   }
 
   render() {
-    const todos = this.state.todos.map(todo => {
+    const todos = this.props.tds.todos.map(todo => {
       return (
         <Todo
           key={todo._id}
@@ -79,12 +77,14 @@ class TodoApp extends Component {
           <Label for="addTodo">New task!</Label>
           <Input
             type="text"
-            name="todo"
+            name="addTodoText"
             id="addTodo"
             placeholder="insert todo here"
             onChange={this.getTodoTextFromInput}
           />
-          <Button color="secondary">Add todo</Button>
+          <Button color="secondary" onClick={this.handAddTodo}>
+            Add todo
+          </Button>
         </Form>
         <ListGroup>{todos}</ListGroup>
         <EditTodo
@@ -104,7 +104,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getTodosFromDb: getTodos(dispatch)
+    getTodosFromDb: () => {
+      dispatch(getTodos());
+    },
+    onAddTodo: newTodo => {
+      dispatch(addTodo(newTodo));
+    }
   };
 };
 
