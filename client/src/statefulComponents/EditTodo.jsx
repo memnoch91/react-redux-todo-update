@@ -6,23 +6,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Input, Label, Button } from "reactstrap";
 
 import { connect } from "react-redux";
-import { deleteTodo } from "../actions/index";
+import { deleteTodo, updateTodo } from "../actions/index";
 
 class EditTodo extends Component {
   state = {
     loadedTodo: null,
     newTodo: null,
-    updateTodo: ""
+    updateTodo: "",
+    completedStatus: false
   };
 
-  handleEditTodo = e => {
+  handleEditTodoText = e => {
     this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handleEditTodoCoplete = e => {
+    this.setState({ [e.target.name]: e.target.checked });
   };
 
   deleteTodo = event => {
     event.preventDefault();
     let incTodoId = this.props.currentState._id;
-    //debugger;
     this.props.onDeleteTodo(incTodoId);
     /*
     axios
@@ -34,10 +38,12 @@ class EditTodo extends Component {
       */
   };
 
-  handleDeleteEvent = evt => {
-    this.deleteTodo(evt);
-    const selectedTodo = this.props.currentState;
-    this.props.handleDeleteTodo(selectedTodo);
+  handleUpdateTodo = event => {
+    event.preventDefault();
+    let incTodoId = this.props.currentState._id;
+    let incTodoText = this.state.updateTodo;
+    let incTodoComplete = this.state.completedStatus;
+    this.props.onSaveTodo(incTodoId, incTodoText, incTodoComplete);
   };
 
   render() {
@@ -54,12 +60,24 @@ class EditTodo extends Component {
               id="editTodo"
               placeholder="Edit todo here"
               name="updateTodo"
-              onChange={this.handleEditTodo}
+              onChange={this.handleEditTodoText}
               value={this.state.updateTodo}
             />
           </Label>
+          <br />
+          <Label>
+            Toggle Complete: <br />
+            <input
+              type="checkbox"
+              name="completedStatus"
+              onChange={this.handleEditTodoCoplete}
+            />
+          </Label>
+
           <div>
-            <Button color="primary">Save</Button>
+            <Button color="primary" onClick={this.handleUpdateTodo}>
+              Save
+            </Button>
             <Button color="warning" onClick={this.deleteTodo}>
               Delete
             </Button>
@@ -94,6 +112,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onDeleteTodo: id => {
       dispatch(deleteTodo(id));
+    },
+    onSaveTodo: (id, todoText, todoComplete) => {
+      dispatch(updateTodo(id, todoText, todoComplete));
     }
   };
 };
@@ -102,3 +123,11 @@ export default connect(
   null,
   mapDispatchToProps
 )(EditTodo);
+
+/*
+  handleDeleteEvent = evt => {
+    this.deleteTodo(evt);
+    const selectedTodo = this.props.currentState;
+    this.props.handleDeleteTodo(selectedTodo);
+  };
+  */

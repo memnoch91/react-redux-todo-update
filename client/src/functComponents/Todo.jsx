@@ -10,7 +10,9 @@ import { ListGroupItem } from "reactstrap";
 class Todo extends Component {
   handleInCommingClick = () => {
     const clickedToDo = this.props.currentTodo;
-    this.props.clicked(clickedToDo);
+    const clickedToDoIndex = this.props.index;
+
+    this.props.clicked(clickedToDo, clickedToDoIndex);
   };
 
   render() {

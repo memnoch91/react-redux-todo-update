@@ -14,6 +14,7 @@ class TodoApp extends Component {
   state = {
     todos: [],
     clickedTodo: null,
+    clickedTodoIndex: null,
     deletedTodos: null,
     addTodoText: null
   };
@@ -41,9 +42,10 @@ class TodoApp extends Component {
     this.props.onAddTodo(currentText);
   };
 
-  handleTodoClicked = todo => {
+  handleTodoClicked = (todo, index) => {
     this.setState({
-      clickedTodo: todo
+      clickedTodo: todo,
+      clickedTodoIndex: index
     });
   };
 
@@ -53,20 +55,28 @@ class TodoApp extends Component {
     });
   };
 
-  componentDidUpdate(prevProps, presState) {
-    if (presState !== prevProps) {
-      this.props.getTodosFromDb();
+  componentDidUpdate(prevProps) {
+    let index = this.state.clickedTodoIndex;
+    let oldProps = prevProps.tds.todos[index];
+    let currentProps = this.props.tds.todos[index];
+
+    if (oldProps && currentProps) {
+      oldProps = prevProps.tds.todos[index];
+      currentProps = this.props.tds.todos[index];
+      console.log("O:", oldProps);
+      console.log("C:", currentProps);
     }
   }
 
   render() {
-    const todos = this.props.tds.todos.map(todo => {
+    const todos = this.props.tds.todos.map((todo, index) => {
       return (
         <Todo
           key={todo._id}
           currentTodo={todo}
           text={todo.todoText}
           clicked={this.handleTodoClicked}
+          index={index}
         />
       );
     });

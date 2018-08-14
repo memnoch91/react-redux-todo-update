@@ -1,4 +1,10 @@
-import { GET_TODOS, TODOS_LOADING, ADD_TODO, DELETE_TODO } from "./types";
+import {
+  GET_TODOS,
+  TODOS_LOADING,
+  ADD_TODO,
+  DELETE_TODO,
+  UPDATE_TODO
+} from "./types";
 import axios from "axios";
 
 export const setTodosLoading = () => {
@@ -51,10 +57,30 @@ export const deleteTodo = id => {
     return axios
       .delete(`/api/todos/delete/${id}`)
       .then(res => {
-        console.log(res);
         dispatch({
           type: DELETE_TODO,
           payload: res.data._id
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+};
+
+export const updateTodo = (id, todoText, todoComplete) => {
+  return function(dispatch) {
+    return axios
+      .put(`/api/todos/update/${id}`, {
+        _id: id,
+        todoText: todoText,
+        todoComplete: todoComplete,
+        todoDate: Date.now
+      })
+      .then(res => {
+        dispatch({
+          type: UPDATE_TODO,
+          payload: res.data
         });
       })
       .catch(err => {
