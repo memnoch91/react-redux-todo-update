@@ -8,11 +8,11 @@ import {
 
 const initialState = {
   todos: [],
-  todo: {},
   todosLoading: false
 };
 
 export default function todoReducer(state = initialState, action) {
+  let newArray = state.todos.slice();
   switch (action.type) {
     case GET_TODOS:
       return {
@@ -28,21 +28,34 @@ export default function todoReducer(state = initialState, action) {
     case DELETE_TODO: {
       return {
         ...state,
-        todos: state.todos.filter(todo => todo._id !== action.payload)
+        todos: newArray.filter(todo => todo._id !== action.payload._id),
+        todosLoading: false
       };
     }
     case UPDATE_TODO:
       return {
         ...state,
+        todos: state.todos.map(todo => {
+          if (todo._id === action.payload._id) {
+            return Object.assign({}, todo, action.payload);
+          }
+          return todo;
+        }),
+        todosLoading: false
+      };
+
+    /*{
+        ...state,
         todos: state.todos.map((todo, index) => {
           if (todo._id === action.payload._id) {
             //todo[index] = action.payload;
-            state.todos.splice(index, 1);
-            state.todos.splice(index, 0, action.payload);
+            state.todos[index] = action.payload;
+            // state.todos.splice(index, 1);
+            // state.todos.splice(index, 0, action.payload);
           }
           return todo;
         })
-      };
+      };*/
     case TODOS_LOADING:
       return {
         ...state,

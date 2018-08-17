@@ -12,11 +12,10 @@ import { getTodos, addTodo } from "../actions/index";
 
 class TodoApp extends Component {
   state = {
-    todos: [],
     clickedTodo: null,
     clickedTodoIndex: null,
     deletedTodos: null,
-    addTodoText: null
+    addTodoText: " "
   };
 
   componentDidMount() {
@@ -40,6 +39,7 @@ class TodoApp extends Component {
     e.preventDefault();
     let currentText = this.state.addTodoText;
     this.props.onAddTodo(currentText);
+    this.setState({ addTodoText: "" });
   };
 
   handleTodoClicked = (todo, index) => {
@@ -56,16 +56,19 @@ class TodoApp extends Component {
   };
 
   componentDidUpdate(prevProps) {
+    /*
     let index = this.state.clickedTodoIndex;
     let oldProps = prevProps.tds.todos[index];
     let currentProps = this.props.tds.todos[index];
 
-    if (oldProps && currentProps) {
+    if (oldProps) {
       oldProps = prevProps.tds.todos[index];
       currentProps = this.props.tds.todos[index];
-      console.log("O:", oldProps);
-      console.log("C:", currentProps);
+      if (oldProps.todoText !== currentProps.todoText) {
+        this.props.getTodosFromDb();
+      }
     }
+    */
   }
 
   render() {
@@ -81,6 +84,16 @@ class TodoApp extends Component {
       );
     });
 
+    let editPanel;
+    if (this.state.clickedTodo) {
+      editPanel = (
+        <EditTodo
+          currentState={this.state.clickedTodo}
+          handleDeleteTodo={this.handleDeleteTodo}
+        />
+      );
+    }
+
     return (
       <Container>
         <Form>
@@ -91,16 +104,14 @@ class TodoApp extends Component {
             id="addTodo"
             placeholder="insert todo here"
             onChange={this.getTodoTextFromInput}
+            value={this.state.addTodoText}
           />
           <Button color="secondary" onClick={this.handAddTodo}>
             Add todo
           </Button>
         </Form>
         <ListGroup>{todos}</ListGroup>
-        <EditTodo
-          currentState={this.state.clickedTodo}
-          handleDeleteTodo={this.handleDeleteTodo}
-        />
+        {editPanel}
       </Container>
     );
   }

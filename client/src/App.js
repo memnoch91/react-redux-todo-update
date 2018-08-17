@@ -9,7 +9,7 @@ import TodoApp from "./statefulComponents/TodoApp";
 class App extends Component {
   render() {
     return (
-      <Provider store={store}>
+      <Provider store={ store }>
         <TodoApp />
       </Provider>
     );

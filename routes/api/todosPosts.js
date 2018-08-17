@@ -54,9 +54,13 @@ router.post("/add", (req, res) => {
  */
 
 router.delete("/delete/:id", (req, res) => {
-  Todo.findById(req.params.id)
-    .then(todo => todo.remove().then(() => res.json({ success: true })))
-    .catch(err => res.status(404).json({ success: false, error: err.message }));
+  // debugger;
+  Todo.findOneAndRemove({ _id: req.params.id }, (error, data) => {
+    error ? res.status(500).json(error) : res.status(200).json(data);
+  });
+  // Todo.findById()
+  //   .then((err, todo) => todo.remove().then(() => todo))
+  //   .catch(err => res.status(404).json({ success: false, error: err.message }));
 });
 
 /**

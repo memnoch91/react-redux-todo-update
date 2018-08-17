@@ -9,14 +9,41 @@ import { connect } from "react-redux";
 import { deleteTodo, updateTodo } from "../actions/index";
 
 class EditTodo extends Component {
-  state = {
-    loadedTodo: null,
-    newTodo: null,
-    updateTodo: "",
-    completedStatus: false
-  };
+  state = {};
+
+  // getDerivedStateFromProps(props) {
+  //   this.state = {
+  //     loadedTodo: "",
+  //     updateTodo: "",
+  //     completedStatus: false,
+  //     needsUpdate: true,
+  //     currentTodo: this.props.currentState
+  //   };
+  //   console.log("init", this.props);
+  // }
+  /*
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (prevState.needsUpdate) {
+      if (prevProps.currentState) {
+        this.setState({
+          updateTodo: prevProps.currentState.todoText,
+          needsUpdate: false
+        });
+      }
+    } else if (prevState.needsUpdate === false) {
+      if (prevState.updateTodo !== prevProps.currentState.todoText) {
+        this.setState({
+          updateTodo: prevProps.currentState.todoText,
+          needsUpdate: true
+        });
+      }
+    }
+    return null;
+  }
+  */
 
   handleEditTodoText = e => {
+    this.props.currentState.todoText = e.target.value;
     this.setState({ [e.target.name]: e.target.value });
   };
 
@@ -26,8 +53,8 @@ class EditTodo extends Component {
 
   deleteTodo = event => {
     event.preventDefault();
-    let incTodoId = this.props.currentState._id;
-    this.props.onDeleteTodo(incTodoId);
+    let incTodo = this.props.currentState;
+    this.props.onDeleteTodo(incTodo._id);
     /*
     axios
       .delete(`/api/todos/delete/${incTodoId}`)
@@ -44,24 +71,29 @@ class EditTodo extends Component {
     let incTodoText = this.state.updateTodo;
     let incTodoComplete = this.state.completedStatus;
     this.props.onSaveTodo(incTodoId, incTodoText, incTodoComplete);
+    this.setState({ updateTodo: "" });
   };
 
   render() {
+    // this.setState({
+    //   updateTodo: this.props.currentState
+    // });
+
     let currentTodo = this.props.currentState;
     let post = <p>Please Select a todo</p>;
     if (currentTodo) {
       post = (
         <div className="editTodo">
           <h3>Selected todo: {currentTodo.todoText}</h3>
-          <h3>Edit Here: {this.state.updateTodo}</h3>
+          {/* <h3>Edit Here: {this.state.updateTodo}</h3> */}
           <Label for="editTodo">
             <Input
               type="text"
               id="editTodo"
-              placeholder="Edit todo here"
+              placeholder="update here"
               name="updateTodo"
               onChange={this.handleEditTodoText}
-              value={this.state.updateTodo}
+              value={this.props.currentState.todoText || " "}
             />
           </Label>
           <br />

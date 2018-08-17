@@ -57,9 +57,10 @@ export const deleteTodo = id => {
     return axios
       .delete(`/api/todos/delete/${id}`)
       .then(res => {
+        console.log("res:", res);
         dispatch({
           type: DELETE_TODO,
-          payload: res.data._id
+          payload: res.data
         });
       })
       .catch(err => {
